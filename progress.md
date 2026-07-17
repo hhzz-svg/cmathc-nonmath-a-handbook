@@ -247,3 +247,21 @@
 - `outputs/cmathc_nonmath_a_handbook/README.md`: added the repository-level entry point and direct artifact guidance.
 - `progress.md`: appended the public-release documentation record.
 - Rollback: `git revert <public-release-documentation-commit>` restores repository documentation; repository visibility can be changed back with `gh repo edit hhzz-svg/cmathc-nonmath-a-handbook --visibility private --accept-visibility-change-consequences`.
+
+## 2026-07-18 - Task: verify public GitHub release
+
+### What was done
+
+- Changed `hhzz-svg/cmathc-nonmath-a-handbook` from private to public after the newcomer documentation reached `main`.
+- Added a concise GitHub repository description and the `calculus`, `chinese`, `math-competition`, `study-guide`, and `typst` topics.
+
+### Testing
+
+- `gh repo view` returned `visibility=PUBLIC` and `isPrivate=false`.
+- The default branch is `main`; the public documentation commit is `5330ad3`.
+
+### Notes
+
+- GitHub repository settings: visibility, description, and topics were updated; no source or handbook content changed in this step.
+- `progress.md`: appended the verified public-release state.
+- Rollback: run `gh repo edit hhzz-svg/cmathc-nonmath-a-handbook --visibility private --accept-visibility-change-consequences`; revert `5330ad3` only if the public-facing documentation must also be removed.
