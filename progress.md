@@ -121,3 +121,30 @@
 - `outputs/cmathc_nonmath_a_handbook/SOURCE_GAPS.md`：明确仅保留不绑定正文的 `S-LA-000` 边界。
 - `progress.md`：以追加方式记录原 92/91 统计已由本轮 65/64 统计取代，不改写历史日志。
 - 回滚点：修复前提交为 `118d8ee`；可执行 `git restore --source=118d8ee -- outputs/cmathc_nonmath_a_handbook/SOURCES.md outputs/cmathc_nonmath_a_handbook/SOURCE_GAPS.md outputs/cmathc_nonmath_a_handbook/references/scope-matrix.csv progress.md` 撤销本轮修复。
+
+## 2026-07-17 - Task: 创建可测试的构建与质量检查基础设施
+
+### What was done
+
+- 新增 PDF 页数检查、内容台账检查和全页预览渲染脚本，并提供可直接调用的 Python 接口和命令行入口。
+- 新增 Windows 一键构建脚本，按 Typst 编译、页数检查、内容检查和全页渲染的顺序执行，任一步失败立即停止。
+- 建立四个行为测试，覆盖页数上下限、答案锚点缺失和精讲题数量不符。
+
+### Testing
+
+- RED：首次运行 `python -m pytest outputs/cmathc_nonmath_a_handbook/tests/test_checks.py -q`，因 `scripts.check_content` 尚不存在而在测试收集阶段失败，符合预期。
+- GREEN：安装 `requirements.txt` 后再次运行同一命令，结果为 `4 passed in 0.18s`，无跳过测试。
+- 实际台账运行 `check_content.py --allow-incomplete`，输出 `CONTENT_CHECK=PASS`；当前题量为零，未提前要求最终 50/35/35/12 数量。
+- 两页测试 PDF 的页数 CLI 输出 `PAGE_COUNT=2`；渲染输出 2 张页面 PNG 和联系表，旧 `page-999.png` 被清理，非预览文件 `keep.txt` 被保留。
+- 三个 Python 脚本通过 `py_compile`，`build.ps1` 通过 PowerShell ScriptBlock 语法解析，`git diff --check` 通过。
+
+### Notes
+
+- `outputs/cmathc_nonmath_a_handbook/requirements.txt`：新增 pypdf、PyMuPDF 和 pytest 版本范围。
+- `outputs/cmathc_nonmath_a_handbook/scripts/check_page_count.py`：新增 95--110 页默认区间检查和 CLI。
+- `outputs/cmathc_nonmath_a_handbook/scripts/check_content.py`：新增题量、编号、答案、范围缺口和精讲复核台账检查。
+- `outputs/cmathc_nonmath_a_handbook/scripts/render_preview.py`：新增逐页 PNG 与四列联系表渲染。
+- `outputs/cmathc_nonmath_a_handbook/tests/test_checks.py`：新增四个基础设施行为测试。
+- `outputs/cmathc_nonmath_a_handbook/build.ps1`：新增 Windows 一键构建与验收入口。
+- `progress.md`：追加本轮实现和测试记录。
+- 回滚点：本任务基线为 `977a85a`；可执行 `git restore --source=977a85a -- progress.md` 并删除上述六个新增文件，撤销本任务改动。
