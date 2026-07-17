@@ -55,3 +55,21 @@
 - `README.md`：新增仓库目标、设计、计划、交付目录和进度入口。
 - `progress.md`：追加私有仓库初始化准备记录。
 - 回滚方式：在首次提交前可删除 `.gitignore` 与根目录 `README.md`；仓库创建后可在 GitHub 仓库设置中删除远程仓库，本地可删除 `.git` 元数据回到未版本化状态。
+
+## 2026-07-17 - Task: 建立多代理隔离施工环境
+
+### What was done
+
+- 创建 `codex/write-handbook` 隔离工作树分支，后续实现不直接修改 `main`。
+- 将多代理任务简报、报告和持久进度台账目录加入 Git 忽略范围。
+
+### Testing
+
+- `git worktree` 已创建，隔离工作树当前分支为 `codex/write-handbook`，基线提交为 `14e09e7`。
+- 基线仓库尚无可执行项目代码，因此无自动化测试入口；版本状态检查正常。
+
+### Notes
+
+- `.gitignore`：新增 `.superpowers/` 忽略规则。
+- `progress.md`：追加隔离施工环境记录。
+- 回滚方式：在主工作区执行 `git worktree remove '.worktrees/write-handbook'`，再删除分支 `git branch -D 'codex/write-handbook'`。
