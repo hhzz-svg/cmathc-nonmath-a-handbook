@@ -3,13 +3,16 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Source = Join-Path $ProjectRoot "src\main.typ"
 $OutputDir = Join-Path $ProjectRoot "output"
+$LogDir = Join-Path $ProjectRoot "logs"
 $PreviewDir = Join-Path $ProjectRoot "logs\preview"
-$Pdf = Join-Path $OutputDir "全国大学生数学竞赛非数学A类备考手册.pdf"
+$PdfName = -join ([char]20840, [char]22269, [char]22823, [char]23398, [char]29983, [char]25968, [char]23398, [char]31454, [char]36187, [char]38750, [char]25968, [char]23398, [char]65, [char]31867, [char]22791, [char]32771, [char]25163, [char]20876, ".pdf")
+$Pdf = Join-Path $OutputDir $PdfName
 
 $Typst = Get-Command typst -ErrorAction Stop
 $Python = Get-Command python -ErrorAction Stop
 
-New-Item -ItemType Directory -Force -Path $OutputDir, $PreviewDir | Out-Null
+Set-Location $ProjectRoot
+New-Item -ItemType Directory -Force -Path $OutputDir, $LogDir, $PreviewDir | Out-Null
 
 function Invoke-Checked {
     param(

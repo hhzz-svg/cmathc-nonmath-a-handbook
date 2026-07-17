@@ -195,3 +195,32 @@
 - `outputs/cmathc_nonmath_a_handbook/references/page-budget.csv`：将范围冲突行改为高等数学综合强化计划行。
 - `progress.md`：追加本轮范围纠偏和验证证据。
 - 回滚点：本轮修改前提交为 `fa80e8d`；可执行 `git restore --source=fa80e8d -- docs/superpowers/specs/2026-07-17-cmathc-nonmath-a-handbook-design.md docs/superpowers/plans/2026-07-17-cmathc-nonmath-a-handbook.md outputs/cmathc_nonmath_a_handbook/references/page-budget.csv progress.md` 撤销本轮修订。
+## 2026-07-17 - Task: finalize handbook delivery
+
+### What was done
+
+- Completed the 97-page Typst handbook with 50 worked examples, 35 quick examples, 35 exercises, and 12 mock-test questions.
+- Added the delivery README, project acceptance matrix, and final quality report.
+- Fixed the Windows PowerShell output-path encoding issue in `build.ps1` and replaced Typst underscore placeholders with the `blank` layout component.
+- Confirmed the repository remains private at `https://github.com/hhzz-svg/cmathc-nonmath-a-handbook`.
+
+### Testing
+
+- `python -m pytest tests/test_checks.py -q`: `8 passed`.
+- `typstyle --check src`: passed.
+- `powershell -ExecutionPolicy Bypass -File .\build.ps1`: passed.
+- Build output: `PAGE_COUNT=97`, `WORKED=50 QUICK=35 EXERCISE=35 MOCK=12 TOTAL=132`, `CONTENT_CHECK=PASS`, `RENDERED_PAGES=97`.
+- PDF SHA-256: `32CA25548289A91D39C4D4C973E2EDE46125FBBA876293F2A41572A3BAB3C221`.
+
+### Notes
+
+- `outputs/cmathc_nonmath_a_handbook/README.md`: added build, directory, scope, and font instructions.
+- `outputs/cmathc_nonmath_a_handbook/PROJECT_PLAN.md`: added the delivery acceptance matrix.
+- `outputs/cmathc_nonmath_a_handbook/logs/QUALITY_REPORT.md`: recorded final machine and visual checks.
+- `outputs/cmathc_nonmath_a_handbook/build.ps1`: made Windows execution reproducible with an ASCII-safe filename construction.
+- `outputs/cmathc_nonmath_a_handbook/src/settings.typ`: added the reusable blank-line component.
+- `outputs/cmathc_nonmath_a_handbook/src/review_units.typ`: replaced underscore placeholders and formatted the file.
+- `outputs/cmathc_nonmath_a_handbook/src/workbook.typ`: formatted the file after the placeholder update.
+- `outputs/cmathc_nonmath_a_handbook/output/全国大学生数学竞赛非数学A类备考手册.pdf`: regenerated final PDF.
+- `outputs/cmathc_nonmath_a_handbook/logs/preview/`: regenerated 97-page preview set.
+- Rollback: `git restore --source=HEAD -- progress.md outputs/cmathc_nonmath_a_handbook/build.ps1 outputs/cmathc_nonmath_a_handbook/src/settings.typ outputs/cmathc_nonmath_a_handbook/src/review_units.typ outputs/cmathc_nonmath_a_handbook/src/workbook.typ`; remove the newly added delivery files if reverting the full delivery commit.
