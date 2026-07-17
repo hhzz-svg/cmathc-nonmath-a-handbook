@@ -35,6 +35,8 @@ def _write_project(
     root: Path,
     problems: list[dict[str, str]],
     reviews: list[dict[str, str]] | None = None,
+    scopes: list[dict[str, str]] | None = None,
+    source_gaps: str = "",
 ) -> None:
     references = root / "references"
     _write_csv(
@@ -66,19 +68,7 @@ def _write_project(
             "verification_date",
             "status",
         ],
-        [
-            {
-                "scope_id": "S-HM-000",
-                "category": "初赛-科目与组别",
-                "official_item": "非数学专业类初赛考试内容为高等数学",
-                "official_source": "SRC-CMS-18-PDF",
-                "chapter": "第1章",
-                "coverage_kind": "reference",
-                "content_id": "R01-SCOPE",
-                "verification_date": "2026-07-17",
-                "status": "verified",
-            }
-        ],
+        scopes or [_scope("S-HM-000", "verified")],
     )
     _write_csv(
         references / "math-review.csv",
@@ -92,6 +82,23 @@ def _write_project(
         ],
         reviews or [],
     )
+    if source_gaps:
+        (root / "SOURCE_GAPS.md").write_text(source_gaps, encoding="utf-8")
+
+
+def _scope(scope_id: str, status: str) -> dict[str, str]:
+    is_gap = status == "gap"
+    return {
+        "scope_id": scope_id,
+        "category": "初赛-范围",
+        "official_item": scope_id,
+        "official_source": "SRC-CMS-18-PDF",
+        "chapter": "" if is_gap else "第1章",
+        "coverage_kind": "reference",
+        "content_id": "" if is_gap else "R01-SCOPE",
+        "verification_date": "2026-07-17",
+        "status": status,
+    }
 
 
 def _problem(problem_id: str, kind: str, answer_anchor: str) -> dict[str, str]:
@@ -154,3 +161,56 @@ def test_validate_project_reports_wrong_worked_count(tmp_path: Path) -> None:
     errors = validate_project(tmp_path)
 
     assert "worked count 49 does not equal 50" in errors
+
+
+def test_allow_incomplete_rejects_problem_bound_to_gap(tmp_path: Path) -> None:
+    problem = _problem("Q02-01", "quick", "answer-q02-01")
+    problem["scope_ids"] = "S-HM-GAP-001"
+    _write_project(
+        tmp_path,
+        [problem],
+        scopes=[_scope("S-HM-GAP-001", "gap")],
+        source_gaps="S-HM-GAP-001",
+    )
+
+    errors = validate_project(tmp_path, allow_incomplete=True)
+
+    assert "problem Q02-01 references unresolved gap S-HM-GAP-001" in errors
+
+
+@pytest.mark.parametrize(
+    ("problems", "expected"),
+    [
+        (
+            [
+                _problem("Q02-01", "quick", "answer-1"),
+                _problem("Q02-01", "quick", "answer-2"),
+            ],
+            "duplicate problem_id Q02-01",
+        ),
+        (
+            [
+                {
+                    **_problem("Q02-01", "quick", "answer-q02-01"),
+                    "scope_ids": "S-HM-UNKNOWN",
+                }
+            ],
+            "problem Q02-01 references unknown scope_id S-HM-UNKNOWN",
+        ),
+        (
+            [_problem("W02-01", "worked", "answer-w02-01")],
+            "worked problem W02-01 has no math review",
+        ),
+    ],
+    ids=("duplicate-id", "unknown-scope", "missing-worked-review"),
+)
+def test_allow_incomplete_keeps_structural_checks(
+    tmp_path: Path,
+    problems: list[dict[str, str]],
+    expected: str,
+) -> None:
+    _write_project(tmp_path, problems)
+
+    errors = validate_project(tmp_path, allow_incomplete=True)
+
+    assert expected in errors

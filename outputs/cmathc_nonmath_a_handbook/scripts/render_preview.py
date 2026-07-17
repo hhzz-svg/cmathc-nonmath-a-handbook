@@ -15,36 +15,46 @@ def render_pdf(pdf: Path, out_dir: Path, dpi: int = 144) -> list[Path]:
     if contact_sheet.exists():
         contact_sheet.unlink()
 
-    document = fitz.open(pdf)
     scale = dpi / 72
     matrix = fitz.Matrix(scale, scale)
     rendered: list[Path] = []
-    for index, page in enumerate(document, start=1):
-        path = out_dir / f"page-{index:03d}.png"
-        page.get_pixmap(matrix=matrix, alpha=False).save(path)
-        rendered.append(path)
+    with fitz.open(pdf) as document:
+        for index, page in enumerate(document, start=1):
+            path = out_dir / f"page-{index:03d}.png"
+            page.get_pixmap(matrix=matrix, alpha=False).save(path)
+            rendered.append(path)
 
-    if rendered:
-        columns = 4
-        gap = 8
-        thumb_width = 240
-        first_page = document[0].rect
-        thumb_height = round(thumb_width * first_page.height / first_page.width)
-        rows = math.ceil(len(rendered) / columns)
-        sheet_width = columns * thumb_width + (columns + 1) * gap
-        sheet_height = rows * thumb_height + (rows + 1) * gap
-        sheet_pdf = fitz.open()
-        sheet_page = sheet_pdf.new_page(width=sheet_width, height=sheet_height)
-        for index, image_path in enumerate(rendered):
-            row, column = divmod(index, columns)
-            left = gap + column * (thumb_width + gap)
-            top = gap + row * (thumb_height + gap)
-            rect = fitz.Rect(left, top, left + thumb_width, top + thumb_height)
-            sheet_page.insert_image(rect, filename=str(image_path), keep_proportion=True)
-        sheet_page.get_pixmap(alpha=False).save(contact_sheet)
-        sheet_pdf.close()
+        if rendered:
+            columns = 4
+            gap = 8
+            thumb_width = 240
+            first_page = document[0].rect
+            thumb_height = round(thumb_width * first_page.height / first_page.width)
+            rows = math.ceil(len(rendered) / columns)
+            sheet_width = columns * thumb_width + (columns + 1) * gap
+            sheet_height = rows * thumb_height + (rows + 1) * gap
+            with fitz.open() as sheet_pdf:
+                sheet_page = sheet_pdf.new_page(
+                    width=sheet_width,
+                    height=sheet_height,
+                )
+                for index, image_path in enumerate(rendered):
+                    row, column = divmod(index, columns)
+                    left = gap + column * (thumb_width + gap)
+                    top = gap + row * (thumb_height + gap)
+                    rect = fitz.Rect(
+                        left,
+                        top,
+                        left + thumb_width,
+                        top + thumb_height,
+                    )
+                    sheet_page.insert_image(
+                        rect,
+                        filename=str(image_path),
+                        keep_proportion=True,
+                    )
+                sheet_page.get_pixmap(alpha=False).save(contact_sheet)
 
-    document.close()
     return rendered
 
 

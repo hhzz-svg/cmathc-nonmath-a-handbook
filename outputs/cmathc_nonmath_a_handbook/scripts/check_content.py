@@ -89,8 +89,13 @@ def validate_project(root: Path, allow_incomplete: bool = False) -> list[str]:
         if not row.get("answer_anchor", "").strip():
             errors.append(f"problem {problem_id} has no answer_anchor")
         for scope_id in _scope_ids(row.get("scope_ids", "")):
-            if scope_id not in scope_by_id:
+            scope = scope_by_id.get(scope_id)
+            if scope is None:
                 errors.append(f"problem {problem_id} references unknown scope_id {scope_id}")
+            elif scope.get("status", "").strip() == "gap":
+                errors.append(
+                    f"problem {problem_id} references unresolved gap {scope_id}"
+                )
         if not _scope_ids(row.get("scope_ids", "")):
             errors.append(f"problem {problem_id} has no scope_ids")
 

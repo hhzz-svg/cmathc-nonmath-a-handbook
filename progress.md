@@ -148,3 +148,28 @@
 - `outputs/cmathc_nonmath_a_handbook/build.ps1`：新增 Windows 一键构建与验收入口。
 - `progress.md`：追加本轮实现和测试记录。
 - 回滚点：本任务基线为 `977a85a`；可执行 `git restore --source=977a85a -- progress.md` 并删除上述六个新增文件，撤销本任务改动。
+
+## 2026-07-17 - Task: 修正 partial 范围校验与 PDF 资源释放
+
+### What was done
+
+- 根据独立审查补充 unresolved gap 绑定检查，题目引用 `status=gap` 的范围条目时始终报错，`--allow-incomplete` 不放行。
+- 为 partial 模式补充 gap 绑定、重复题号、未知范围和精讲题缺少复核记录的回归测试。
+- 将主 PDF 与联系表临时 PDF 改为上下文管理，确保渲染或联系表生成异常时仍释放文件句柄。
+
+### Testing
+
+- RED：新增 gap 绑定测试后运行 `python -m pytest outputs/cmathc_nonmath_a_handbook/tests/test_checks.py -q`，结果为 `1 failed, 7 passed`；失败项确认现有实现未拒绝 `S-HM-GAP-001`。
+- GREEN：实现 gap 拒绝分支后运行同一命令，结果为 `8 passed in 0.23s`。
+- 页数 smoke 的准确命令为 `python outputs/cmathc_nonmath_a_handbook/scripts/check_page_count.py work/task2-review-two-pages.pdf --minimum 2 --maximum 2`，输出 `PAGE_COUNT=2`；该结果不代表默认 95--110 页检查接受两页 PDF。
+- 实际台账运行 `check_content.py --allow-incomplete`，输出 `CONTENT_CHECK=PASS`。
+- 两页 PDF 渲染输出 2 张页面 PNG 和联系表；旧 `page-999.png` 被清理，`keep.txt` 被保留。
+- 三个 Python 脚本通过 `py_compile`，`git diff --check` 通过。
+
+### Notes
+
+- `outputs/cmathc_nonmath_a_handbook/scripts/check_content.py`：新增题目绑定 unresolved gap 的拒绝逻辑。
+- `outputs/cmathc_nonmath_a_handbook/scripts/render_preview.py`：为 PyMuPDF 文档增加异常安全的上下文管理。
+- `outputs/cmathc_nonmath_a_handbook/tests/test_checks.py`：新增四条 partial 模式回归路径。
+- `progress.md`：仅追加本轮更正和准确的两页 PDF smoke 命令，不改写旧记录。
+- 回滚点：修复前提交为 `71a2078`；可执行 `git restore --source=71a2078 -- outputs/cmathc_nonmath_a_handbook/scripts/check_content.py outputs/cmathc_nonmath_a_handbook/scripts/render_preview.py outputs/cmathc_nonmath_a_handbook/tests/test_checks.py progress.md` 撤销本轮修复。
