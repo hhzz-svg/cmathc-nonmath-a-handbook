@@ -73,3 +73,30 @@
 - `.gitignore`：新增 `.superpowers/` 忽略规则。
 - `progress.md`：追加隔离施工环境记录。
 - 回滚方式：在主工作区执行 `git worktree remove '.worktrees/write-handbook'`，再删除分支 `git branch -D 'codex/write-handbook'`。
+
+## 2026-07-17 - Task: 核验最新官方范围并建立来源台账
+
+### What was done
+
+- 核验中国数学会 2026 年发布的第十八届竞赛通知，确认非数学专业 A 类为理工类、初赛只考高等数学，线性代数仅属于决赛内容。
+- 以第十八届通知确定当前科目边界，以竞赛命题组 2022 年正式出版指南补充八大高等数学逐项细目，建立 92 条范围记录。
+- 建立来源、信息缺口、题目、数学复核和页数预算台账，并明确原设计中 11 页线性代数章节与初赛定位冲突。
+
+### Testing
+
+- 官方来源门槛通过：记录 4 个中国数学会第一方页面或附件，所有动态事实均含 URL 与查询日期。
+- 范围表检查通过：92 个唯一 ID，其中 `verified=91`、`gap=1`；唯一缺口 `S-HM-GAP-001` 已在 `SOURCE_GAPS.md` 说明且未绑定正文。
+- 字段检查通过：`coverage_kind` 仅使用 `reference`，`status` 仅使用 `verified` 或 `gap`，核验日期统一为 2026-07-17。
+- 页数预算检查通过：14 行合计 102 页；线性代数行标记为 `scope-conflict`，等待计划修订。
+- 附件指南已成功提取到 `work/nonmath_scope_2022.txt`，可检出“非数学专业类”“高等数学”和“线性代数”。
+
+### Notes
+
+- `outputs/cmathc_nonmath_a_handbook/SOURCES.md`：新增第一方动态来源、权威出版物和当前范围结论。
+- `outputs/cmathc_nonmath_a_handbook/SOURCE_GAPS.md`：新增逐项大纲缺口、试卷结构缺口和线性代数计划冲突。
+- `outputs/cmathc_nonmath_a_handbook/references/scope-matrix.csv`：新增 92 条官方范围与范围边界映射。
+- `outputs/cmathc_nonmath_a_handbook/references/problem-ledger.csv`：新增题目台账表头。
+- `outputs/cmathc_nonmath_a_handbook/references/math-review.csv`：新增精讲例题复核台账表头。
+- `outputs/cmathc_nonmath_a_handbook/references/page-budget.csv`：新增 14 行、102 页的设计预算并标记范围冲突。
+- `progress.md`：追加本轮来源核验、范围结论和验证证据。
+- 回滚点：提交前基线为 `7129f7c`；可执行 `git restore --source=7129f7c -- progress.md` 并删除 `outputs/cmathc_nonmath_a_handbook/`，撤销本任务文件改动。
