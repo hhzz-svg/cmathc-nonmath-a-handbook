@@ -100,3 +100,24 @@
 - `outputs/cmathc_nonmath_a_handbook/references/page-budget.csv`：新增 14 行、102 页的设计预算并标记范围冲突。
 - `progress.md`：追加本轮来源核验、范围结论和验证证据。
 - 回滚点：提交前基线为 `7129f7c`；可执行 `git restore --source=7129f7c -- progress.md` 并删除 `outputs/cmathc_nonmath_a_handbook/`，撤销本任务文件改动。
+
+## 2026-07-17 - Task: 修正当前官方范围矩阵的线性代数边界
+
+### What was done
+
+- 根据独立审查结论，从当前范围矩阵删除 2022 年指南中的 27 条线性代数历史细目，只保留第十八届通知可直接证明的 `S-LA-000` 科目边界。
+- 清除 `S-LA-000` 的章节和正文 ID 绑定，避免后续检查把决赛科目边界误判为初赛正文要求。
+
+### Testing
+
+- 修正后范围表共有 65 个唯一 ID，其中 `verified=64`、`gap=1`；不存在 `S-LA-101` 至 `S-LA-603`。
+- `S-LA-000` 的 `chapter` 与 `content_id` 均为空；唯一缺口 `S-HM-GAP-001` 仍与 `SOURCE_GAPS.md` 同步。
+- 页数预算保持 14 行、合计 102 页，本轮未扩展到章节计划重写。
+
+### Notes
+
+- `outputs/cmathc_nonmath_a_handbook/references/scope-matrix.csv`：删除未经第十八届通知逐项确认的线性代数历史细目。
+- `outputs/cmathc_nonmath_a_handbook/SOURCES.md`：明确线性代数历史细目不进入当前官方范围矩阵。
+- `outputs/cmathc_nonmath_a_handbook/SOURCE_GAPS.md`：明确仅保留不绑定正文的 `S-LA-000` 边界。
+- `progress.md`：以追加方式记录原 92/91 统计已由本轮 65/64 统计取代，不改写历史日志。
+- 回滚点：修复前提交为 `118d8ee`；可执行 `git restore --source=118d8ee -- outputs/cmathc_nonmath_a_handbook/SOURCES.md outputs/cmathc_nonmath_a_handbook/SOURCE_GAPS.md outputs/cmathc_nonmath_a_handbook/references/scope-matrix.csv progress.md` 撤销本轮修复。
