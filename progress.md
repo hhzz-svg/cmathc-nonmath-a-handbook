@@ -173,3 +173,25 @@
 - `outputs/cmathc_nonmath_a_handbook/tests/test_checks.py`：新增四条 partial 模式回归路径。
 - `progress.md`：仅追加本轮更正和准确的两页 PDF smoke 命令，不改写旧记录。
 - 回滚点：修复前提交为 `71a2078`；可执行 `git restore --source=71a2078 -- outputs/cmathc_nonmath_a_handbook/scripts/check_content.py outputs/cmathc_nonmath_a_handbook/scripts/render_preview.py outputs/cmathc_nonmath_a_handbook/tests/test_checks.py progress.md` 撤销本轮修复。
+
+## 2026-07-17 - Task: 将初赛线性代数预算改为高等数学综合强化
+
+### What was done
+
+- 根据第十八届官方通知的科目边界，将原第 9 章“线性代数”改为“高等数学综合强化”，初赛正文不再分配线性代数章节或题目。
+- 保留原 11 页、8 道精讲、5 道短例和 5 道训练的配额，改为覆盖八个高等数学模块的跨专题综合题；同步修订模拟题、速查表和索引分类。
+
+### Testing
+
+- 页数预算检查通过：14 个区块合计 102 页，“高等数学综合强化”为 11 页且状态为 `planned`。
+- 精讲分配检查通过：设计表 14 行的精讲建议数合计 50 道。
+- 范围文本扫描通过：线性代数只保留历史附件提取要求、决赛科目边界和 `S-LA-000` 不得绑定正文的约束，不再作为初赛内容任务。
+- `python -m pytest outputs/cmathc_nonmath_a_handbook/tests/test_checks.py -q` 结果为 `8 passed in 0.20s`；`check_content.py --allow-incomplete` 输出 `CONTENT_CHECK=PASS`；`git diff --check` 通过。
+
+### Notes
+
+- `docs/superpowers/specs/2026-07-17-cmathc-nonmath-a-handbook-design.md`：将线性代数页数预算改为高等数学综合强化，并写明最新官方初赛科目边界。
+- `docs/superpowers/plans/2026-07-17-cmathc-nonmath-a-handbook.md`：重写 Chapter 9、模拟题、速查和索引的线性代数内容要求。
+- `outputs/cmathc_nonmath_a_handbook/references/page-budget.csv`：将范围冲突行改为高等数学综合强化计划行。
+- `progress.md`：追加本轮范围纠偏和验证证据。
+- 回滚点：本轮修改前提交为 `fa80e8d`；可执行 `git restore --source=fa80e8d -- docs/superpowers/specs/2026-07-17-cmathc-nonmath-a-handbook-design.md docs/superpowers/plans/2026-07-17-cmathc-nonmath-a-handbook.md outputs/cmathc_nonmath_a_handbook/references/page-budget.csv progress.md` 撤销本轮修订。
