@@ -224,3 +224,26 @@
 - `outputs/cmathc_nonmath_a_handbook/output/全国大学生数学竞赛非数学A类备考手册.pdf`: regenerated final PDF.
 - `outputs/cmathc_nonmath_a_handbook/logs/preview/`: regenerated 97-page preview set.
 - Rollback: `git restore --source=HEAD -- progress.md outputs/cmathc_nonmath_a_handbook/build.ps1 outputs/cmathc_nonmath_a_handbook/src/settings.typ outputs/cmathc_nonmath_a_handbook/src/review_units.typ outputs/cmathc_nonmath_a_handbook/src/workbook.typ`; remove the newly added delivery files if reverting the full delivery commit.
+
+## 2026-07-18 - Task: publish repository and add newcomer documentation
+
+### What was done
+
+- Rewrote the repository landing page as a newcomer-oriented introduction with direct PDF access, build instructions, repository structure, scope boundaries, and maintenance entry points.
+- Added a contribution guide covering synchronized problem edits, mathematical review, source updates, layout checks, local acceptance commands, and copyright boundaries.
+- Extended the handbook project README with the repository-level onboarding path.
+- Prepared the GitHub repository description and topics for public discovery.
+
+### Testing
+
+- Verified that the PDF, quality report, source register, gap register, and contribution guide paths all exist.
+- `git diff --check`: passed.
+- GitHub visibility will be verified after the documentation commit is pushed and the repository is changed to public.
+
+### Notes
+
+- `README.md`: replaced the stale in-progress description with a complete public project introduction.
+- `CONTRIBUTING.md`: added the newcomer contribution and review workflow.
+- `outputs/cmathc_nonmath_a_handbook/README.md`: added the repository-level entry point and direct artifact guidance.
+- `progress.md`: appended the public-release documentation record.
+- Rollback: `git revert <public-release-documentation-commit>` restores repository documentation; repository visibility can be changed back with `gh repo edit hhzz-svg/cmathc-nonmath-a-handbook --visibility private --accept-visibility-change-consequences`.
