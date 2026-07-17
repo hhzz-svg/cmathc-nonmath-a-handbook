@@ -1,0 +1,75 @@
+name: 数学内容纠错
+description: 报告题目、答案、证明、条件或记号中的数学问题
+title: "[数学纠错] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢帮助复核手册。请尽量提供可以独立检查的信息，避免只写“答案不对”或“这里有问题”。
+
+  - type: input
+    id: location
+    attributes:
+      label: 问题位置
+      description: 请填写 PDF 页码、章节、例题编号或源文件路径。
+      placeholder: 例如：第 32 页，例 5.4；src/chapter05.typ
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 问题类型
+      options:
+        - 题目条件不充分或表述歧义
+        - 计算结果错误
+        - 证明存在逻辑缺口
+        - 定理或公式适用条件缺失
+        - 参数范围、端点或绝对值遗漏
+        - 记号或排版影响理解
+        - 题目来源或范围标注问题
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: original
+    attributes:
+      label: 当前内容
+      description: 请摘录必要的题目、结论或步骤，不要粘贴无关的大段内容。
+      placeholder: 当前手册写的是……
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 问题说明与复算过程
+      description: 请说明为什么有误，并给出推导、反例、数值核验或参考依据。
+      placeholder: 在条件……下，使用……可得……，因此原结论……
+    validations:
+      required: true
+
+  - type: textarea
+    id: correction
+    attributes:
+      label: 建议修改
+      description: 可以给出修正后的题目、答案或证明。没有完整方案时也可留空。
+      placeholder: 建议将……修改为……
+
+  - type: input
+    id: environment
+    attributes:
+      label: 使用版本
+      description: 请填写 PDF 文件名、Release 版本或提交 SHA（如已知）。
+      placeholder: 例如：main 分支 2026-07-18 版本
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已检查现有 Issue，未发现相同问题。
+          required: true
+        - label: 我提供的信息足以让维护者定位并复核问题。
+          required: true
